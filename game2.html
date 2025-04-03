@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Maze Game</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        .maze {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            grid-template-rows: repeat(10, 40px);
+            gap: 2px;
+            margin: 20px auto;
+            width: 420px;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid black;
+        }
+        .wall {
+            background-color: black;
+        }
+        .player {
+            background-color: blue;
+        }
+        .goal {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <h2>Use Arrow Keys to Move the Blue Square to the Green Goal!</h2>
+    <div class="maze" id="maze"></div>
+    <script>
+        const mazeLayout = [
+            [1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,1,0,0,0,0,1],
+            [1,0,1,0,1,0,1,1,0,1],
+            [1,0,1,0,0,0,1,0,0,1],
+            [1,0,1,1,1,1,1,0,1,1],
+            [1,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,0,1,1,1],
+            [1,0,0,0,0,1,0,0,0,1],
+            [1,0,1,1,0,1,1,1,0,1],
+            [1,1,1,1,0,0,0,1,2,1]
+        ];
+
+        const maze = document.getElementById("maze");
+        let playerPos = { x: 1, y: 1 };
+
+        function drawMaze() {
+            maze.innerHTML = "";
+            mazeLayout.forEach((row, y) => {
+                row.forEach((cell, x) => {
+                    const div = document.createElement("div");
+                    div.classList.add("cell");
+                    if (cell === 1) div.classList.add("wall");
+                    if (cell === 2) div.classList.add("goal");
+                    if (playerPos.x === x && playerPos.y === y) div.classList.add("player");
+                    maze.appendChild(div);
+                });
+            });
+        }
+
+        function movePlayer(dx, dy) {
+            const newX = playerPos.x + dx;
+            const newY = playerPos.y + dy;
+            if (mazeLayout[newY][newX] !== 1) {
+                playerPos.x = newX;
+                playerPos.y = newY;
+                drawMaze();
+                if (mazeLayout[newY][newX] === 2) {
+                    setTimeout(() => alert("You Win!"), 100);
+                }
+            }
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp") movePlayer(0, -1);
+            if (e.key === "ArrowDown") movePlayer(0, 1);
+            if (e.key === "ArrowLeft") movePlayer(-1, 0);
+            if (e.key === "ArrowRight") movePlayer(1, 0);
+        });
+
+        drawMaze();
+    </script>
+</body>
+</html>
