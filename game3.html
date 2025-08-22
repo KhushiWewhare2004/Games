@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Ball Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #game {
+      position: relative;
+      margin: 20px auto;
+      width: 400px;
+      height: 500px;
+      border: 2px solid #333;
+      background: linear-gradient(to top, #cce7ff, #ffffff);
+      overflow: hidden;
+    }
+    #basket {
+      position: absolute;
+      bottom: 10px;
+      left: 180px;
+      width: 60px;
+      height: 20px;
+      background: #ff5733;
+      border-radius: 5px;
+    }
+    .ball {
+      position: absolute;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      background: #33c4ff;
+      border-radius: 50%;
+    }
+    #score {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Catch the Ball!</h1>
+  <div id="game">
+    <div id="basket"></div>
+  </div>
+  <p id="score">Score: 0</p>
+
+  <script>
+    const game = document.getElementById("game");
+    const basket = document.getElementById("basket");
+    const scoreDisplay = document.getElementById("score");
+    let score = 0;
+
+    // Basket movement
+    let basketX = 180;
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" && basketX > 0) basketX -= 20;
+      if (e.key === "ArrowRight" && basketX < 340) basketX += 20;
+      basket.style.left = basketX + "px";
+    });
+
+    // Create falling balls
+    function createBall() {
+      const ball = document.createElement("div");
+      ball.classList.add("ball");
+      ball.style.left = Math.random() * 380 + "px";
+      game.appendChild(ball);
+
+      let fallInterval = setInterval(() => {
+        let ballTop = parseInt(ball.style.top || 0);
+        if (ballTop >= 480) {
+          // Check if caught
+          let ballX = parseInt(ball.style.left);
+          if (ballX > basketX - 20 && ballX < basketX + 60) {
+            score++;
+          } else {
+            score--;
+          }
+          scoreDisplay.innerText = "Score: " + score;
+
+          ball.remove();
+          clearInterval(fallInterval);
+        } else {
+          ball.style.top = ballTop + 5 + "px";
+        }
+      }, 30);
+    }
+
+    // Drop balls every second
+    setInterval(createBall, 2500);
+  </script>
+</body>
+</html>
